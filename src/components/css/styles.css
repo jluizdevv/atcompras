@@ -1,0 +1,223 @@
+/* styles.css */
+
+/* Estilos globais */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+  
+  a {
+    color: #333;
+    text-decoration: none;
+    margin-right: 10px;
+  }
+  
+  button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Estilos específicos para cada componente */
+  
+  /* Estilos para o componente Login */
+  .login-container {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .login-form {
+    margin-bottom: 20px;
+  }
+  
+  .login-form label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
+  }
+  
+  .login-form input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .login-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .login-link {
+    color: #333;
+    text-decoration: none;
+    margin-right: 10px;
+  }
+  
+  
+  .fornecedores-container .logout-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .fornecedores-container .back-link {
+    color: #333;
+    text-decoration: none;
+    margin-right: 10px;
+  }
+  .fornecedores-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    list-style-type: none;
+  }
+  
+  .fornecedores-list-item {
+    background-color: #3b0707;
+    padding: 20px;
+  }
+  
+  
+  .fornecedores-list-item:nth-child(3n+1) {
+    background-color: #e4bfbf; 
+  }
+  
+  .fornecedores-list-item:nth-child(3n+2) {
+    background-color: #e4bfbf; 
+  }
+  
+  .fornecedores-list-item:nth-child(3n+3) {
+    background-color: #90EE90; 
+  }
+  
+
+ 
+.cadastro-fornecedor-container {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .cadastro-fornecedor-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .cadastro-fornecedor-container .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .cadastro-fornecedor-container .form-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
+  }
+  
+  .cadastro-fornecedor-container .form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .cadastro-fornecedor-container .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .cadastro-fornecedor-container .form-group select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .cadastro-fornecedor-container .form-group button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+
+  .link-cadastrar-usuario {
+    color: #0421dd; 
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .link-cad-fornecedor {
+    color: #092f97; 
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .link-exibir-fornecedores{
+    color: #092f97; 
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .editar-fornecedor-link{
+    color: #092f97; 
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
