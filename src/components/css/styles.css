@@ -220,4 +220,14 @@ body {
     text-decoration: none;
     font-weight: bold;
   }
+  .link-exib-fornecedor {
+    color: blue;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .link-cad-prod-cotacoes{
+    color: rgb(180, 110, 18);
+    text-decoration: none;
+    font-weight: bold;
+}
   

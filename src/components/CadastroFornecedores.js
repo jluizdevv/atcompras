@@ -5,8 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 function CadastroFornecedores() {
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
-  const [produto, setProduto] = useState('');
-  const [estoque, setEstoque] = useState('');
+ 
+  
 ;
 
   const navigate = useNavigate();
@@ -18,17 +18,17 @@ function CadastroFornecedores() {
     if (user) {
       const userId = user.uid;
 
-      // Salvar os dados do estagiário no Firestore
+     
       await firestore.collection('fornecedores').add({
         userId,
         nome,
         telefone,
-        produto,
-        estoque,
+        
+      
        
       });
 
-      // Redirecionar para a página de estagiários cadastrados
+      
       navigate('/fornecedores');
     }
   };
@@ -46,15 +46,6 @@ function CadastroFornecedores() {
           <input type="text" id="telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
         </div>
         <div>
-          <label htmlFor="idade">Qual produto fornece:</label>
-          <input type="text" id="produto" value={produto} onChange={(e) => setProduto(e.target.value)} required />
-        </div>
-        <div>
-          <label htmlFor="estoque">Quantidade no estoque:</label>
-          <input type="text" id="estoque" value={estoque} onChange={(e) => setEstoque(e.target.value)} required />
-        </div>
-        <div>
-          
           <button type="submit">Cadastrar</button>
         </div>
       </form>

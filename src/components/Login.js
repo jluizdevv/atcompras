@@ -13,7 +13,7 @@ function TelaLogin() {
   const handleLogin = async () => {
     try {
       await auth.signInWithEmailAndPassword(email, password);
-      // Login bem-sucedido
+
       setLoggedIn(true);
     } catch (error) {
         setError('Não existe uma empresa correspondente a este email. Verificar no setor responsávem, se o cadastro foi feito.');

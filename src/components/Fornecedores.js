@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { firestore, auth } from '../services/firebase';
 import { Link, Navigate } from 'react-router-dom';
-import './css/styles.css';
 
 function Fornecedores() {
   const [fornecedores, setFornecedores] = useState([]);
@@ -14,19 +13,29 @@ function Fornecedores() {
       if (user) {
         setUserEmail(user.email);
 
-        const snapshot = await firestore
+        const fornecedoresSnapshot = await firestore
           .collection('fornecedores')
           .where('userId', '==', user.uid)
           .get();
 
-        const fornecedoresData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const fornecedoresData = [];
+        for (const doc of fornecedoresSnapshot.docs) {
+          const fornecedor = doc.data();
+          const produtosSnapshot = await firestore
+            .collection('produtos')
+            .where('fornecedorId', '==', doc.id)
+            .get();
+          const produtosData = produtosSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          fornecedor.produtos = produtosData;
+          fornecedoresData.push({ id: doc.id, ...fornecedor });
+        }
 
         setFornecedores(fornecedoresData);
       } else {
-        // User is not logged in, redirect to the login page
+  
         setShouldRedirect(true);
       }
     };
@@ -39,14 +48,14 @@ function Fornecedores() {
     setShouldRedirect(true);
   };
 
-  const handleDelete = async (fornecedorId) => {
+  const handleExcluirFornecedor = async (fornecedorId) => {
     try {
       await firestore.collection('fornecedores').doc(fornecedorId).delete();
-      setFornecedores((prevFornecedores) =>
-        prevFornecedores.filter((fornecedor) => fornecedor.id !== fornecedorId)
-      );
+     
+      const updatedFornecedores = fornecedores.filter((fornecedor) => fornecedor.id !== fornecedorId);
+      setFornecedores(updatedFornecedores);
     } catch (error) {
-      console.error('Error deleting fornecedor:', error);
+      console.log('Erro ao excluir fornecedor:', error);
     }
   };
 
@@ -56,8 +65,10 @@ function Fornecedores() {
 
   return (
     <div>
-      <h1>Fornecedores cadastrados no sistema de compras</h1>
+      <h1>Menu de Fornecedores, Produtos e Cotações</h1>
       <p>Usuário conectado: {userEmail}</p>
+
+      <h2>Fornecedores cadastrados:</h2>
       {fornecedores.length === 0 ? (
         <p>Nenhum fornecedor cadastrado.</p>
       ) : (
@@ -66,32 +77,44 @@ function Fornecedores() {
             <li className="fornecedores-list-item" key={fornecedor.id}>
               <p>Nome: {fornecedor.nome}</p>
               <p>Telefone: {fornecedor.telefone}</p>
-              <p>Produto: {fornecedor.produto}</p>
-              <p>Estoque: {fornecedor.estoque}</p>
-              <div className="fornecedores-list-item-actions">
-                <Link
-                  to={`/editar-fornecedor/${fornecedor.id}`}
-                  className="editar-fornecedor-link"
-                >
+
+           
+              {fornecedor.produtos && fornecedor.produtos.length > 0 ? (
+                <div>
+                  <p>Produtos:</p>
+                  <ul>
+                    {fornecedor.produtos.map((produto) => (
+                      <li key={produto.id}>
+                        Nome: {produto.nome}, Preço: {produto.preco}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p>Nenhum produto cadastrado para este fornecedor.</p>
+              )}
+
+              <div className="fornecedores-list-actions">
+                <Link to={`/editar-fornecedor/${fornecedor.id}`} className="editar-fornecedor-link">
                   Editar
                 </Link>
-                <button
-                  onClick={() => handleDelete(fornecedor.id)}
-                  className="excluir-fornecedor-button"
-                >
-                  Excluir
-                </button>
+                <button onClick={() => handleExcluirFornecedor(fornecedor.id)}>Excluir</button>
               </div>
             </li>
           ))}
         </ul>
       )}
-      <Link to="/cadastrar-fornecedores" className="link-cad-fornecedores">
+
+      <Link to="/cadastrar-fornecedores" className="link-cad-fornecedor">
         Cadastrar um novo Fornecedor
       </Link>
-      <Link to="/cadastrar-produto" className="link-cad-produto">
-        Cadastrar Produtos e Cotações
-      </Link>
+
+      <p>
+        <Link to="/cadastrar-produto" className="link-cad-prod-cotacoes">
+          Adicionar Produtos e Cotações ao Fornecedor
+        </Link>
+      </p>
+
       <p>
         <button onClick={handleLogout}>Logout</button>
       </p>

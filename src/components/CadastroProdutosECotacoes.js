@@ -1,49 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { firestore, auth } from '../services/firebase';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function CadastroProdutosECotacoes() {
-  const navigate = useNavigate();
-
-  const [produto, setProduto] = useState('');
+  const [nome, setNome] = useState('');
   const [preco, setPreco] = useState('');
+  const [fornecedores, setFornecedores] = useState([]);
 
-  const handleCadastro = async (e) => {
+  useEffect(() => {
+    const fetchFornecedores = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const fornecedoresSnapshot = await firestore
+          .collection('fornecedores')
+          .where('userId', '==', user.uid)
+          .get();
+
+        const fornecedoresData = fornecedoresSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setFornecedores(fornecedoresData);
+      }
+    };
+
+    fetchFornecedores();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     const user = auth.currentUser;
-
-    try {
-      // Salvar os dados no Firestore
-      const produtoCotacaoData = {
-        produto,
-        preco,
-        userId: user.uid,
-      };
-
-      await firestore.collection('produtosCotacoes').add(produtoCotacaoData);
-
-      // Redirecionar para a página de Produtos e Cotações
-      navigate('/produtos-e-cotacoes');
-    } catch (error) {
-      console.error('Erro ao cadastrar produto/cotação:', error);
+    if (user) {
+      try {
+        const fornecedorId = e.target.fornecedor.value;
+        await firestore.collection('produtos').add({
+          nome,
+          preco,
+          fornecedorId,
+          userId: user.uid,
+        });
+        // Limpar campos após cadastrar
+        setNome('');
+        setPreco('');
+      } catch (error) {
+        console.error('Erro ao cadastrar produto:', error);
+      }
     }
   };
 
   return (
     <div>
-      <h1>Cadastro de Produtos e Cotações</h1>
-      <form onSubmit={handleCadastro}>
+      <h1>Adicionar Produtos ligados ao Fornecedor</h1>
+      <form onSubmit={handleSubmit}>
         <label>
-          Produto:
-          <input type="text" value={produto} onChange={(e) => setProduto(e.target.value)} />
+          Nome:
+          <input
+            type="text"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+          />
         </label>
         <label>
           Preço:
-          <input type="text" value={preco} onChange={(e) => setPreco(e.target.value)} />
+          <input
+            type="text"
+            value={preco}
+            onChange={(e) => setPreco(e.target.value)}
+          />
+        </label>
+        <label>
+          Fornecedor:
+          <select name="fornecedor">
+            {fornecedores.map((fornecedor) => (
+              <option key={fornecedor.id} value={fornecedor.id}>
+                {fornecedor.nome}
+              </option>
+            ))}
+          </select>
         </label>
         <button type="submit">Cadastrar</button>
       </form>
+      <Link to="/fornecedores" className="link-exib-fornecedor" > Exibir produtos juntos ao Fornecedor </Link>
+      
     </div>
   );
 }

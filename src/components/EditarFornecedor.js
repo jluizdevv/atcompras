@@ -8,9 +8,7 @@ function EditarFornecedor() {
 
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
-  const [produto, setProduto] = useState('');
-  const [estoque, setEstoque] = useState('');
-
+  const [produtos, setProdutos] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,11 +19,18 @@ function EditarFornecedor() {
         const data = snapshot.data();
         setNome(data.nome);
         setTelefone(data.telefone);
-        setProduto(data.produto);
-        setEstoque(data.estoque);
-       
+
+        const produtosSnapshot = await firestore
+          .collection('produtos')
+          .where('fornecedorId', '==', id)
+          .get();
+        const produtosData = produtosSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setProdutos(produtosData);
       } else {
-        // Estagiário não encontrado, redirecionar para a página de estagiários
+        // Fornecedor não encontrado, redirecionar para a página de fornecedores
         navigate('/fornecedores');
       }
     };
@@ -33,20 +38,56 @@ function EditarFornecedor() {
     fetchData();
   }, [id, navigate]);
 
+  const handleNomeChange = (e) => {
+    setNome(e.target.value);
+  };
+
+  const handleTelefoneChange = (e) => {
+    setTelefone(e.target.value);
+  };
+
+  const handleProdutoNomeChange = (produtoId, e) => {
+    const updatedProdutos = produtos.map((produto) => {
+      if (produto.id === produtoId) {
+        return { ...produto, nome: e.target.value };
+      }
+      return produto;
+    });
+    setProdutos(updatedProdutos);
+  };
+
+  const handleProdutoPrecoChange = (produtoId, e) => {
+    const updatedProdutos = produtos.map((produto) => {
+      if (produto.id === produtoId) {
+        return { ...produto, preco: e.target.value };
+      }
+      return produto;
+    });
+    setProdutos(updatedProdutos);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Atualizar os dados do estagiário no Firestore
+    // Atualizar os dados do fornecedor no Firestore
     const fornecedorRef = firestore.collection('fornecedores').doc(id);
     await fornecedorRef.update({
       nome,
       telefone,
-      produto,
-      estoque,
-     
     });
 
-    // Redirecionar de volta para a página de estagiários
+    // Atualizar os dados dos produtos associados ao fornecedor no Firestore
+    const batch = firestore.batch();
+    produtos.forEach((produto) => {
+      const produtoRef = firestore.collection('produtos').doc(produto.id);
+      batch.update(produtoRef, {
+        nome: produto.nome,
+        preco: produto.preco,
+      });
+    });
+    await batch.commit();
+
+    // Redirecionar de volta para a página de fornecedores
     navigate('/fornecedores');
   };
 
@@ -56,20 +97,41 @@ function EditarFornecedor() {
       <form onSubmit={handleSubmit}>
         <label>
           Nome:
-          <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} />
+          <input type="text" value={nome} onChange={handleNomeChange} />
         </label>
         <label>
           Telefone:
-          <input type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
+          <input type="text" value={telefone} onChange={handleTelefoneChange} />
         </label>
-        <label>
-          Idade:
-          <input type="text" value={produto} onChange={(e) => setProduto(e.target.value)} />
-        </label>
-        <label>
-          Endereço:
-          <input type="text" value={estoque} onChange={(e) => setEstoque(e.target.value)} />
-        </label>
+
+        <h2>Produtos:</h2>
+        {produtos.length === 0 ? (
+          <p>Nenhum produto cadastrado para este fornecedor.</p>
+        ) : (
+          <ul>
+            {produtos.map((produto) => (
+              <li key={produto.id}>
+                <label>
+                  Nome:
+                  <input
+                    type="text"
+                    value={produto.nome}
+                    onChange={(e) => handleProdutoNomeChange(produto.id, e)}
+                  />
+                </label>
+                <label>
+                  Preço:
+                  <input
+                    type="text"
+                    value={produto.preco}
+                    onChange={(e) => handleProdutoPrecoChange(produto.id, e)}
+                  />
+                </label>
+              </li>
+            ))}
+          </ul>
+        )}
+
         <button type="submit">Salvar</button>
       </form>
     </div>

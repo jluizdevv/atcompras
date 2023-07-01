@@ -5,8 +5,8 @@ import TelaFornecedores from './components/Fornecedores';
 import CadastroFornecedores from './components/CadastroFornecedores';
 import EditarFornecedor from './components/EditarFornecedor';
 import CadastroProdutosECotacoes from './components/CadastroProdutosECotacoes';
-import EditarProdutosECotacoes from './components/EditarProdutosECotacoes';
-import ProdutosECotacoes from './components/ProdutosECotacoes';
+
+
 
 function App() {
   return (
@@ -20,9 +20,7 @@ function App() {
           <Route path="/cadastrar-fornecedores" element={<CadastroFornecedores />} />
           <Route path="/editar-fornecedor/:id" element={<EditarFornecedor />} />
           <Route path="/cadastrar-produto" element={<CadastroProdutosECotacoes />} />
-          <Route path="/editar-produto/:id" element={<EditarProdutosECotacoes />} />
-          <Route path="/produtos-cotacoes" element={<ProdutosECotacoes />} />
-        </Routes>
+          </Routes>
       </Router>
     </div>
   );
